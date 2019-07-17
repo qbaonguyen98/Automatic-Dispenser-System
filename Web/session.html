@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">   <!-- Same folder -->
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="angular/angular.min.js"></script>
+</head>
+<body ng-app="myApp">
+<div class="container-fluid bg-light">
+  <h1 class="text-success text-center display-4">AUTOMATIC DISPENSER SYSTEM</h1>
+</div>
+<nav class="navbar navbar-expand-sm bg-success navbar-dark">
+  <ul class="navbar-nav mr-auto">
+    <!-- Dropdown --> <!-- Need jquery-->
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#"  id="a" data-toggle="dropdown">
+        Reports</a>
+      <!-- dropdown-toggle to show the drop arrow-->
+      <!-- data-toggle="dropdown" to show/hide dropdown list when clicked -->
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="rfid.html">RFID</a>
+        <a class="dropdown-item" href="barcode.html">Barcode</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="status.html">Status</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="log.html">Log</a>
+    </li>
+
+    <li class="nav_item">
+      <a class="nav-link" href="user.html">User</a>
+    </li>
+
+    <li class="nav-item active">
+    <a href="session.html" class="nav-link">Session</a>
+    </li>
+
+    <li class="nav_item">
+      <a class="nav-link" href="wage.html">Wage</a>
+    </li>
+
+  </ul>
+  <span class="float-right"><input type="text" ng-model = "search" class="form-control" placeholder="Search">
+  </span>
+</nav>
+<br>
+<div  ng-controller="session" class = "container">
+  <div class ="row">
+    <div class="col table-responsive-md">
+      <h1>Sessions Log <span class="badge badge-secondary float-right" ng-controller="time">{{ clock | date:'HH:mm:ss'}}</span></h1>
+      <div class = "table-responsive">        
+      <table class = "table table-bordered table-striped">
+          <thead class="bg-success text-center ">
+            <tr>
+              <th>Dispenser ID</th>
+              <th>Session</th>
+              <th>Bartender Name</th>
+              <th>Spirit Name</th>
+              <th>Session Shot</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr ng-repeat="x in names | filter : search">
+              <td class="text-center">{{ x.DispenserID }}</td>
+              <td class="text-center">{{ x.Session }}</td>
+              <td class="text-center">{{ x.UserName }}</td>
+              <td class="text-center">{{ x.SpiritName }}</td>
+              <td class="text-center">{{ x.SessionShot }}</td>
+              <td class="text-center">{{ x.Timestamp }}</td>
+            </tr>
+          </tbody>      
+        </table>    
+      </div>
+    </div>
+  </div>
+<script>
+  var app=angular.module('myApp',[]);
+  app.controller('session', function($scope, $http, $interval){
+    $interval(function(){
+        $http.get("session.php")
+        .then(function(response){
+        $scope.names = response.data;}); 
+    },50)         
+  });
+  app.controller('time', function($scope, $interval){
+    var tick = function(){
+      $scope.clock = Date.now();
+    }
+    tick();
+    $interval(tick, 1000);
+  });
+</script>
+</body>
+</html>
